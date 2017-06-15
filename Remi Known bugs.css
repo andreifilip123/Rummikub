@@ -1,0 +1,44 @@
+Remi known bugs 
+
+1. As vrea sa fac tabla jucatorului de o dimensiune fixa 700/150  si as prefera daca se poate sa distribui piesele in randuri in mod egal atunci cand ii dau utilizatorului piesele.
+
+-------------------------------TODO------------------------------
+1. Verificare inainte de etalare daca utilizatorul are minim 50pct
+2. Implementat drag-n-drop pentru a muta piesele pe tabla
+3. Implementat server
+4. First player 15tiles, second player 14tiles
+-----------------------------------------------------------------
+
+
+/***************************FIXED BUGS***************************/
+
+/***********************FIXED*************************************
+1.piesele nu apar sortate in UI desi teoretic in pachet sunt sortate.
+Am verificat cu debuggerul si in pachet sunt sortate chiar si atunci cand le adauga. Am pus chiar si un syso ca atunci cand adauga o piesa pe tabla sa spuna ce piesa a adaugat si asa apar sortate bine insa pe tabla nu apar sortate..
+*****************************************************************/
+
+/***********************FIXED*************************************
+2.functia setValue nu functioneaza cum ar trebui.-DEFAPT FUNCTIONEAZA. AFISAREA PIESELOR NU MERGE CUM AR TREBUI
+*****************************************************************/
+
+/***********************FIXED*************************************
+3.Am implementat o variabila "selected" care sa imi spuna ce piese am selectat si am detectat un bug ciudat
+Am stabilit ca atunci cand apas pe o piesa, variabila selected din ea sa devina true dupa care am facut o afisare a variabilelor care au selected==true si culmea, mi le afiseaza din vectorul sortat, nu din cel nesortat deci inseamna ca butonul BLACK 5 stie ca in spate are BLACK 5 insa la afisare apare RED 11 de exemplu. 
+*****************************************************************/
+
+/***********************FIXED*************************************
+4.Implementat buton de sortare piese curente pe tabla
+*****************************************************************/
+
+/***********************FIXED*************************************
+5. din moment ce piesele mele sunt deja sortate, as vrea sa adaug cumva un spatiu intre piesele de diferite culori
+ex: dupa ce se termina toate piesele galbene, sa fie un gap de o piesa pentru a diferentia putin
+*****************************************************************/
+
+/***********************FIXED*************************************
+6. Trebuie sa adaug MouseEventListener la imagini ca atunci cand dau click pe o imagine sa ii fac selected-true si apoi sa ma apuc de implementarea etalarii
+*****************************************************************/
+
+/***********************FIXED*************************************
+7. Implementat mod de selectie piese pentru etalare 
+*****************************************************************/
