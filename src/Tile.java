@@ -12,6 +12,11 @@ import javax.swing.JLabel;
 
 public class Tile {
 
+	@Override
+	public String toString() {
+		return COLOR + " " + number;
+	}
+
 	public String COLOR;
 	
 	public int number;
@@ -36,6 +41,15 @@ public class Tile {
 	Tile(String color, int nr){
 		COLOR=color;
 		number=nr;
+		setValue();
+		setImage();
+	}
+	
+	Tile(String toString) {
+		COLOR = toString.split(" ")[0];
+		number = Integer.parseInt(toString.split(" ")[1]);
+		setValue();
+		setImage();
 	}
 
 	public void setValue() {
