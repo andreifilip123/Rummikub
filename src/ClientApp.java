@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -39,6 +41,7 @@ public class ClientApp extends JFrame implements Runnable{
 	JTextField newMessage = new JTextField(40);
 	JTextArea messageArea = new JTextArea(8, 40);
 	
+	@SuppressWarnings("unused")
 	private String getServerAddress() {
 		return JOptionPane.showInputDialog(this, "Enter IP Address of the Server:", "Welcome to the Chatter",
 				JOptionPane.QUESTION_MESSAGE);
@@ -154,15 +157,31 @@ public class ClientApp extends JFrame implements Runnable{
 		addToMeld.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				System.out.println(client.addToMeld());
+				if(client.addToMeld(outToServer)){
+					List<Tile> selectedTiles = client.getSelectedTiles();
+					for(int i=0;i<selectedTiles.size();i++){
+						Tile currentTile = selectedTiles.get(i);
+						currentTile.selected=false;
+						if(i==selectedTiles.size()-1){
+							outToServer.println("LAST Add to meld "+currentTile.toString());
+						} else {
+							outToServer.println("Add to meld "+currentTile.toString());
+						}
+						client.remove(currentTile);
+					}
+					sortThenAdd(client, myBoard);
+					revalidate();
+					repaint();
+				}
 			}
 			
 		});
 		
 		setPreferredSize(new Dimension(1280, 720));
+		setResizable(false);
 		
 		myBoard.setPreferredSize(new Dimension(600,150));
-		myBoard.setMaximumSize(new Dimension(600,150));
+		//myBoard.setMaximumSize(new Dimension(600,150));
 		
 		newMessage.addActionListener(new ActionListener() {
 
@@ -185,6 +204,14 @@ public class ClientApp extends JFrame implements Runnable{
 		pack();
 		setVisible(true);
 		
+		this.addWindowListener(new WindowAdapter() {
+		    @Override
+		    public void windowClosing(WindowEvent windowEvent) {
+		    	sendAllTilesBack();
+		        System.exit(0);
+		    }
+		 });
+		
 	}
 	
 	public void sendAllTilesBack(){
@@ -203,5 +230,5 @@ public class ClientApp extends JFrame implements Runnable{
 		new Thread(client).start();
 		
 	}
-	
+			
 }

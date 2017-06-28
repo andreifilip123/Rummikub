@@ -1,11 +1,10 @@
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -31,6 +30,9 @@ public class Tile {
 	
 	int xPos;
 	int yPos;
+	
+	int releaseX;
+	int releaseY;
 	
 	Tile(){
 		COLOR="null";
@@ -70,37 +72,77 @@ public class Tile {
 	
 	public void setImage() {
 		
-		try {
-			auxImage = ImageIO.read(new File(System.getProperty("user.dir")+"\\src\\tiles\\"+COLOR+(number)+".jpg"));
-			image = new JLabel(new ImageIcon(auxImage));
+		auxImage = scaleImage(65,63,System.getProperty("user.dir")+"\\src\\tiles\\"+COLOR+(number)+".jpg");
+		//auxImage = ImageIO.read(new File(System.getProperty("user.dir")+"\\src\\tiles\\"+COLOR+(number)+".jpg"));
+		image = new JLabel(new ImageIcon(auxImage));
+		
+		image.addMouseListener(new MouseAdapter() {
 			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				xPos = e.getX();
+				yPos = e.getY();
+			}
 			
-			image.addMouseListener(new MouseAdapter() {
-				
-				@Override
-				public void mousePressed(MouseEvent e) {
-					xPos = e.getX();
-					yPos = e.getY();
-				}
-				
-				@Override
-				public void mouseClicked(MouseEvent e)
-				{
-					selected = true;
-				}
-			});
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				selected = true;
+			}
 			
-			image.addMouseMotionListener(new MouseMotionAdapter() {
-				
-				@Override
-				public void mouseDragged(MouseEvent e) {
-					JComponent jc = (JComponent)e.getSource();
-					image.setBounds(jc.getX()+e.getX()-xPos, jc.getY()+e.getY()-yPos, image.getWidth(), image.getHeight());
-				}
-			});
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				releaseX=e.getX();
+				releaseY=e.getY();
+			}
+		});
+		
+		image.addMouseMotionListener(new MouseMotionAdapter() {
+			
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				JComponent jc = (JComponent)e.getSource();
+				image.setBounds(jc.getX()+e.getX()-xPos, jc.getY()+e.getY()-yPos, image.getWidth(), image.getHeight());
+			}
+		});
 	}
 	
+	public Point getDropZone(){
+		return new Point(releaseX,releaseY);
+	}
+	
+	public Boolean sameColorAs(Tile aux) {
+		if(this.COLOR.equals(aux.COLOR))
+			return true;
+		return false;
+	}
+	
+	public Boolean sameNumberAs(Tile aux) {
+		if(this.number==aux.number){
+			return true;
+		}
+		return false;
+	}
+	
+	public Boolean sameTileAs(Tile aux) {
+		if(sameColorAs(aux)&&sameNumberAs(aux)){
+			return true;
+		}
+		return false;
+	}
+	
+	public BufferedImage scaleImage(int WIDTH, int HEIGHT, String filename) {
+	    BufferedImage bi = null;
+	    try {
+	        ImageIcon ii = new ImageIcon(filename);//path to image
+	        //                     width, height, image type
+	        bi = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+	        Graphics2D g2d = (Graphics2D) bi.createGraphics();
+	        //g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING,RenderingHints.VALUE_RENDER_QUALITY));
+	        g2d.drawImage(ii.getImage(), 0, 0, WIDTH, HEIGHT, null);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	    return bi;
+	}
 }

@@ -63,6 +63,7 @@ public class Server {
 							for(PrintWriter client:outWriters){
 								client.println("MESSAGE Server: Jucatorul " + name + " s-a conectat.");
 							}
+							outToClient.println("ACCEPTED");
 							outToClient.println("MESSAGE Server: " + "Ai primit piesele:");
 							for(int i=0;i<nrOfTiles;i++){
 								Tile tempTile =mainDeck.draw();
@@ -77,7 +78,6 @@ public class Server {
 					}
 				}
 
-				outToClient.println("ACCEPTED");
 				outWriters.add(outToClient);
 
 				while (true) {
@@ -95,11 +95,15 @@ public class Server {
 								 tempTile = mainDeck.draw();
 							}
 							writer.println("TILE"+tempTile.toString());
-						}
-						if (input.equals("Disconnect")) {
+						} else if (input.startsWith("Add to meld ")){
+							tempTile = new Tile(input.substring(12));
+							mainDeck.add(tempTile);
+						} else if (input.startsWith("LAST Add to meld ")){
+							tempTile = new Tile(input.substring(17));
+							mainDeck.add(tempTile);
+						} else if (input.equals("Disconnect")) {
 							writer.println("DC");
-						}
-						if (input.startsWith("DC")) {
+						} else if (input.startsWith("DC")) {
 							mainDeck.add(new Tile(input.substring(3)));
 						} else {
 							writer.println("MESSAGE " + name + ": " + input);
